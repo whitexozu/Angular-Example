@@ -1,0 +1,20 @@
+<!doctype html>
+<html ng-app>
+<head>
+<meta charset="UTF-8">
+<title>one way data binding</title>
+<script src="../libs/angular/angular.js"></script>
+<script>
+	function mainCtrl($scope) {
+		$scope.name = "철수";
+	}
+</script>
+</head>
+<body ng-controller="mainCtrl">
+	<div>
+		<h2>구입 가격</h2>
+		<div>가격 : {{name}}</div>
+		<input type="text" ng-model="name">
+	</div>
+</body>
+</html>

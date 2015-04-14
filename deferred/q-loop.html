@@ -1,0 +1,59 @@
+<!doctype html>
+<html ng-app="sampleApp">
+<head>
+<meta charset="UTF-8">
+<script src="../libs/angular/angular.js"></script>
+<script type="text/javascript">
+	angular.module('sampleApp', [])
+	.controller('mainCtrl', [ '$q', '$timeout', '$scope', function($q, $timeout, $scope) {
+		$scope.save = function(i) {
+// 			var deferred = $q.defer();
+// 			$timeout(function() {
+				console.log("save ", i);
+// 				for(var i=0; i<length; i++) {
+// 					$scope.save(i);
+// 				}
+// 				if (true) {
+// 					deferred.resolve('save s');
+// 				} else {
+// 					deferred.reject('save f');
+// 				}
+// 			}, 1000);
+			return i;
+		}
+		
+		$scope.proc = function(length) {
+			var deferred = $q.defer();
+			var ri = 0;
+			if (true) {
+				for(var i=0; i<length; i++) {
+					ri = $scope.save(i);
+				}
+				console.log("proc true : "+ri);
+				if(ri == 7)	deferred.resolve("proc s");
+			} else {
+				deferred.reject("proc f");
+			}
+			return deferred.promise;
+		}
+		
+		$scope.action = function() {
+			var promiseWithSave = $scope.proc(10);
+			promiseWithSave.then(function(data) {
+				console.log("data : ", data);
+				if (data == 's') {
+					console.log('success');
+				} else {
+					console.log('fail');
+				}
+			}, function(error) {
+				console.log("error : ", error);
+			});
+		}
+	} ]);
+</script>
+</head>
+<body ng-controller="mainCtrl">
+	<button ng-click="action()">추가</button>
+</body>
+</html>

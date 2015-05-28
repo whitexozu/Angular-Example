@@ -8,87 +8,93 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="./angular.min.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script> -->
+<!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular.min.js"></script> -->
+<script src="./angular-resource.min.js"></script>
 <script src="./angular-cookies.min.js"></script>
 <script src="./angular-touch.min.js"></script>
-<!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular.min.js"></script> -->
-<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script> -->
+
+
 <script src="./app.js"></script>
 <style>
 	input[readonly] {
 	     cursor: pointer;
 	}
+	
+	table {
+        table-layout: fixed
+    }
 </style>
 </head>
 <body class="well" ng-controller="ethogramController">
-	<h1>{{appName}}</h1>
+	<h3>{{appName}}</h3>
 	<div ng-if=!viewChart>
 		<form name="newItemForm" class="form-inline" action="">
 			<div class="form-group">
 				<label class="sr-only" for="newDogName">우리 강아지 이름</label> 
 				<input type="text" class="form-control" name="newDogName" placeholder="우리 강아지 이름" ng-model="newDogName">
 			</div>
-			<button type="submit" class="btn btn-default" ng-click="addNewDogName(newDogName)">추가</button>
-			<button type="submit" class="btn btn-default" ng-click="debug()">debug</button>
+			<button type="submit" class="btn btn-default" ng-click="addNewDogName(newDogName)">Add</button>
+<!-- 			<button type="submit" class="btn btn-default" ng-click="debug()">debug</button> -->
 		</form>
-	
 <!-- 		<p> -->
 <!-- 			전체 할 일 <strong>{{todoList.length}}</strong>개 / 남은 할일은 <strong>{{remain()}}</strong>개 [ <a href="" ng-click="archive()">보관하기</a> ] -->
 <!-- 		</p> -->
 	
 		<ul class="list-unstyled">
-			<li ng-repeat="dog in dogs" class="checkbox">
-			<input type="checkbox" ng-model="dog.name">{{dog.name}} [ <a href="" ng-click="ethogram($index)">ethogram</a> ][ <a href="" ng-click="remove($index)">remove</a> ]</li>
+			<li ng-repeat="dog in dogs" class="checkbox">{{dog.name}} [ <a href="" ng-click="viewEthogram($index)">ethogram</a> ][ <a href="" ng-click="removeDogName($index)">remove</a> ]
+			</li>
 		</ul>
 	</div>
 	
 	<div ng-if=viewChart>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th ng-repeat="item in items">{{item.value}}</th>
-				</tr>
-			</thead>
-			<tbody ng-repeat="dog in dogs | filter:{name:q}">
-				<tr ng-repeat="data in dog.data">
-					<td>{{cates[$index].value}}</td>
-					<td ng-repeat="(key, value) in data">
-						<input type="text" ng-model="data[key]" readonly="readonly" ng-click="modalShow(this, key, value)" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<button type="submit" class="btn btn-default" ng-click="save()">save</button>
-		<button type="submit" class="btn btn-default" ng-click="changeMode()">list</button>
-		<button type="submit" class="btn btn-default" ng-click="debug()">debug</button>
-	</div>
-	
-	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Launch demo modal</button>
+		<div class="table-responsive">
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th style="width: 120px"></th>
+						<th style="width: 140px" ng-repeat="item in items">{{item.value}}</th>
+					</tr>
+				</thead>
+				<tbody ng-repeat="dog in dogs | filter:{name:q}">
+					<tr ng-repeat="data in dog.data">
+						<td>{{cates[$index].value}}</td>
+						<td ng-repeat="(key, value) in data">
+<!-- 							<input type="text" ng-value="getOptionValue(key, value)" ng-click="showOptionModal(key, value)" readonly="readonly" /> -->
+							<textarea ng-click="showOptionModal(key, value)" rows="3" cols="15" readonly="readonly">{{getOptionValue(key, value)}}</textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<button type="submit" class="btn btn-default" ng-click="save()">Save</button>
+		<button type="submit" class="btn btn-default" ng-click="changeMode()">List</button>
+<!-- 		<button type="submit" class="btn btn-default" ng-click="debug()">debug</button> -->
 
-	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
-				</div>
-				<div class="modal-body">
-					<label ng-repeat="option in options">
-						<input type="radio" ng-model="selectedOption.code" name="chooseOption" ng-value="option.code" />{{option.value}}
-					</label>
-					<br />
-<!-- 					<ul> -->
-<!-- 						<li ng-repeat="list in modalList"><input type="checkbox" ng-model="list.code">{{list.value}}</li> -->
-<!-- 					</ul> -->
-<tt>color = {{selectedOption.code | json}}</tt>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" ng-click="modalHide()">Save changes</button>
+		<!-- Modal -->
+		<div class="modal fade" id="optionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					</div>
+					<div class="modal-body">
+						<ul class="list-unstyled" >
+							<li ng-repeat="(key, value) in options">
+								<label>
+									<input type="radio" ng-model="selectedOption.code" name="chooseOption" ng-value="key" /> {{value}}
+								</label>
+							</li>
+						</ul>
+					</div>
+<!-- 					<tt>color = {{selectedOption.code | json}}</tt> -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" ng-click="hideOptionModal()">Save changes</button>
+					</div>
 				</div>
 			</div>
 		</div>
